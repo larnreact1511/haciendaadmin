@@ -1,0 +1,105 @@
+.bg-info2{
+    /*background-color: #e9c155; d12eb0  0d44b5  0d96b5 */
+    background-color: #0d44b5;
+    
+    color: black;
+    font-weight: bold;
+    
+  }
+  .bg-info3{
+    /*background-color: #2642cf;  76f105  0d96b5  1fe5a5  #  */
+    background-color:#d7551d; 
+    font-weight: bold;
+    color: black;
+  }
+  .content-wrapper 
+  {
+    /*
+    background-color: #1fe5a5  bcbf16    ;
+    */
+    background-color: #a2db0b;
+    background-image: url('https://ciclogym.com/assets/img/logonegro.jpg');
+    background-repeat:repeat;
+    background-size: 20rem;
+    
+    
+  }
+  /*.text-black{
+    color: white;
+  }
+  */
+  .sidebar-dark-primary{
+    background-color: #0b0e0d;
+  }
+  .main-footer {
+  
+  /*background-color: #1fe5a5; e4e756 */
+  background-color: #0b0e0d; 
+  border-top: 1px solid #dee2e6;
+  color: white;
+  padding: 1rem;
+}
+.navbar-teal {
+  background-color: #0b0e0d;
+  color: #fff;
+}
+.navbar-light .navbar-nav .nav-link {
+  color: #fff;
+}
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+  color: #f8f9fa;
+}
+/*
+body {
+  margin: 0;
+  font-family: "Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color:#1fe5a5;
+}
+*/
+.enlace1
+{
+  color:blue;
+}
+.enlace2
+{
+  color:greenyellow;
+}
+.enlace3
+{
+  color:pink;
+}
+.enlace4
+{
+  color:red;
+}
+.card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  /*background-color: #cedfe2;*/
+  background-clip: border-box;
+  border: 0 solid rgba(0,0,0,.125);
+  border-radius: 0.25rem;
+  /*opacity: 0.10;*/
+}
+.btn-primary {
+  color: #fff;
+  background-color: #0d44b5;
+  border-color: #0d44b5;
+  box-shadow: none;
+}
+.card-primary2 {
+  background-color: #0d44b5;
+}
+.card-success:not(.card-outline)>.card-header {
+  background-color: #0d44b5;
+}
