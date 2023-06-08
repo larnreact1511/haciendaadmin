@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in</title>
+  <title>Hacienda Administracion</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -17,7 +17,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="<?php echo base_url(); ?>assets/index2.html"><b>Demo</b></a>
+    <a href="#"><b>Hacienda Administración</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -71,7 +71,7 @@ $( "#btn_ingresar" ).click(function()
 {
   $.ajax(
   {
-      url: "<?php echo base_url(); ?>demo/loginverificar",
+      url: "<?php echo base_url(); ?>admin/loginverificar",
       dataType: 'json', // what to expect back from the server                                                                  			
       type: 'post',
       data: 
@@ -87,7 +87,7 @@ $( "#btn_ingresar" ).click(function()
             {
               
               $("#divmjslogin").css('display','none');
-              window.location.href = '<?php echo base_url(); ?>demo/dashboard';
+              window.location.href = '<?php echo base_url(); ?>admin';
             }
             else
             {

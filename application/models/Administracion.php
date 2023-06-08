@@ -99,8 +99,6 @@ class Administracion extends CI_Model
             }
             $vec['count']=count($cant);
         }
-
-        
         return $vec;
     }
     public function listartablasalls ($tabla) 

@@ -2,7 +2,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item has-treeview menu-open">
             <ul class="nav nav-treeview">
-            
+              <!--
               <li class="nav-item">
                 <a href="<?php echo base_url(); ?>demo/registro" class="nav-link">
                   <i class="far fa-circle nav-icon enlace2"></i>
@@ -23,6 +23,19 @@
               </li>
               <li class="nav-item">
                 <a href="<?php echo base_url(); ?>login/salir" class="nav-link">
+                  <i class="far fa-circle nav-icon enlace4"></i>
+                  <p class="enlace4">Salir</p>
+                </a>
+              </li>
+              -->
+              <li class="nav-item">
+                <a href="<?php echo base_url(); ?>admin/ventas" class="nav-link">
+                  <i class="far fa-circle nav-icon enlace4"></i>
+                  <p class="enlace4">Ventas</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url(); ?>admin/salir" class="nav-link">
                   <i class="far fa-circle nav-icon enlace4"></i>
                   <p class="enlace4">Salir</p>
                 </a>

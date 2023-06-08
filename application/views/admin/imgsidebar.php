@@ -5,5 +5,5 @@
           class="brand-image img-circle elevation-3"
           style="opacity: .8">
      -->
-     <span class="brand-text font-weight-light"> Titulo Demo 1 </span>
+     <span class="brand-text font-weight-light"> Admin Hacienda </span>
 </a>

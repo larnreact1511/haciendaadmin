@@ -6,9 +6,12 @@ class Admin extends CI_Controller {
 	
 	public function index()
 	{
+		
 		$this->load->helper('url');
 		$this->load->library('session');
-		$this->load->view('admin/administracion');
+		if (  !$this->session->userdata('login') )
+			redirect(base_url());
+		$this->load->view('admin/ventas');
 	}
 	public function guardaradmin ()
 	{
@@ -144,5 +147,151 @@ class Admin extends CI_Controller {
 				$data['mjs'] =$result['mjs'];
 		}
 		$this->load->view('admin/evento',$data);
+	}
+
+	public function ventas()
+	{
+		$this->load->helper('url');
+		$this->load->library('session');
+		if (  !$this->session->userdata('login') )
+			redirect(base_url());
+		$this->load->view('admin/ventas');
+	}
+	// hacienda
+	public function todaslasventas()
+	{
+		$this->load->model('ventas');
+		$search=$_REQUEST['search'];
+		$data=  $this->ventas->todaslasventas($_REQUEST['draw'],$search);
+        $dataresponce['draw'] =$_REQUEST['draw'];
+        $dataresponce['recordsTotal'] =$data['count'];
+        $dataresponce['recordsFiltered'] =$data['count'];
+        $dataresponce['data']=$data['data'];
+        echo json_encode($dataresponce);
+	}
+	public function guardarabono()
+	{
+		$res =[];
+		if ( (isset($_REQUEST['idsales'])) && (isset($_REQUEST['montoaboono'])) )
+		{
+			$this->load->model('ventas');
+			$insert =array(
+				'sale_id'=>$_REQUEST['idsales'],
+				'monto'=>$_REQUEST['montoaboono'],
+				'fechapgo'=>$_REQUEST['fechaabono']
+			);
+			$res=  $this->ventas->guardarabono($insert);
+		}
+		else
+		{
+			$res = array('result'=>false,'message'=>'faltan datos para poder validar el abono');
+		}
+		echo json_encode($res);
+	} 
+	public function verabonos()
+	{
+		if ( isset($_REQUEST['idsales']) )
+		{
+			$this->load->model('ventas');
+			$res=  $this->ventas->verabonos($_REQUEST['idsales']);
+		}
+		else
+		{
+			$res = array('result'=>false,'message'=>'No se pudo encontrar factura');
+		}
+		echo json_encode($res);
+	}
+	public function mypdf()
+	{
+		/*
+		$this->load->library('pdf');
+		$this->pdf->load_view('examples/pdfexample');
+		$this->pdf->render();
+		$this->pdf->stream("pdfexample");
+		*/
+		$this->load->library('pdf');
+        $html = $this->load->view('examples/pdfexample', [], true);
+        $this->pdf->createPDF($html, 'mypdf', false);
+	}
+	public function mypdf2($id)
+	{
+		$this->load->helper('url');
+		$this->load->library('session');
+		$this->load->model('ventas');
+		$data = $this->ventas->factura($id);
+		$data['nro'] =$id;
+		$this->load->library('pdf');
+		//echo "<pre>";print_r($data); die;
+		$this->load->view('examples/pdfexample2',$data);
+		//$html = file_get_contents($this->load->view('examples/pdfexample2',$data)); 
+		//$html = $this->load->view('examples/pdfexample2', $data, true);
+        //$this->pdf->createPDF($html, 'mypdf', false);
+	}
+	public function mypdf3($id)
+	{
+		$this->load->helper('url');
+		$this->load->library('session');
+		$this->load->model('ventas');
+		$data = $this->ventas->factura($id);
+		$data['nro'] =$id;
+		$this->load->library('pdf');
+		//echo "<pre>";print_r($data); die;
+		//$this->load->view('examples/facturapdf',$data);
+		//$html = file_get_contents($this->load->view('examples/pdfexample2',$data)); 
+		$html = $this->load->view('examples/facturapdf', $data, true);
+        $this->pdf->createPDF($html, 'mypdf', false);
+	}
+	public function guardarcomentario()
+	{
+		
+		if ( (isset($_REQUEST['idsales'])) && (isset($_REQUEST['montotasacambio'])) && (isset($_REQUEST['monotiva16'])) && (isset($_REQUEST['montototal']))  && (isset($_REQUEST['montosubtotal']))  )
+		{
+			$this->load->model('ventas');
+			$insert =array(
+				'sale_id'=>$_REQUEST['idsales'],
+				'exchangerate'=>$_REQUEST['montotasacambio'],
+				'iva'=>$_REQUEST['monotiva16'],
+				'total'=>$_REQUEST['montototal'],
+				'subtotal'=>$_REQUEST['montosubtotal']
+			);
+			$res=  $this->ventas->guardarcomentario($insert);
+		}
+		else
+		{
+			$res = array('result'=>false,'message'=>'faltan datos para poder validar');
+		}
+		echo json_encode($res);
+	} 
+	public function loginverificar()
+	{
+		$this->load->helper('url');
+		$this->load->model('usuarios');
+		// $this->input->post('email'),
+		// $this->input->post('password')
+		if ( ($this->input->post('email')) && ($this->input->post('password')) )
+		{
+			$data = array(
+				'usuarios_correo' => $this->input->post('email'),
+				'usuarios_password' => $this->input->post('password')
+			);
+			echo json_encode($this->usuarios->loginverificar($data));
+		}
+		else
+		{
+			echo json_encode( array('result'=>'400', 'mjs' =>'Datos incompletos') );
+		}
+		
+	}
+
+	public function salir()
+	{
+		$this->load->helper('url');
+		$this->load->library('session');
+		$this->session->set_userdata('login',false);
+		redirect(base_url());
+	}
+	public function is_logged_in()
+	{
+		return ($this->session->userdata('login'));
 	}
 }
