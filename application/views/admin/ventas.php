@@ -307,10 +307,15 @@
                     orderable: false,
                     data: "null",
                     className: "center",
+                    defaultContent:'',
                     render: function(data, type, row, meta) 
                     {
                       // .toLocaleString('es-MX')
-                      if (  (row.payment_type) && (row.payment_type =='venta a credito (TBD)')) 
+                      if (row.payment_type ===null)
+                      {
+
+                      }
+                      else if (  (row.payment_type) && (row.payment_type =='venta a credito (TBD)')) 
                       {
                           return  `<i onclick="agregarpago(${row.sale_id})" title="agregar abono" class="fas fa-plus fa-sm"></i>
                           <i onclick="verabonos(${row.sale_id})" class="fa fa-eye" title ="ver abonos" aria-hidden="true"></i>

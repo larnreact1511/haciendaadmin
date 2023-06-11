@@ -9,7 +9,7 @@ class Ventas extends CI_Model
     }
     public function todaslasventas($nro,$search)
     {
-        $sql="SELECT s.*, sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,FORMAT(ot.subtotal,4,'de_DE') AS subtotal,FORMAT(ot.iva,4,'de_DE') AS iva , FORMAT(ot.total,4,'de_DE') AS total
+        $sql="SELECT s.customer_id, s.employee_id, s.invoice_number, s.sale_type,s.sale_id, sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,FORMAT(ot.subtotal,4,'de_DE') AS subtotal,FORMAT(ot.iva,4,'de_DE') AS iva , FORMAT(ot.total,4,'de_DE') AS total
         FROM ospos_sales s 
         LEFT JOIN ospos_sales_payments sp ON s.sale_id = sp.sale_id 
         LEFT JOIN ospos_tasa ot ON ot.sale_id = s.sale_id
