@@ -8,9 +8,23 @@
 </head>
 <body>
 <div id="page-wrap">
-	<div id="header" style="margin: 20px 0; background: #222;text-align: center; color: #fff; font-size: 2em; letter-spacing: 4px; padding: 10px 0;">
-        Factura de venta 
+	<!--
+	<div id="header" 
+		style="margin: 20px 0; background: #222;text-align: center; color: #fff; font-size: 2em; letter-spacing: 4px; padding: 10px 0;"
+	>
+        //Factura de venta 
     </div>
+	-->
+	<div class="header" style="text-align: center;">
+		<img 
+			id="image" 
+			src="<?php echo base_url();?>uploads/company_logo.png" 
+			style="height:100px;"
+			alt="company_logo"
+		>
+		<br>
+		<?php echo $info[0]->value;?>
+	</div>
 	<div id="block1" style="margin: 0;padding: 0;">
 		<div id="customer-title" style="height: 100px;float: right;margin-top: 40px;">
 			<div id="customer" style="margin: 0; padding: 0;">
@@ -20,18 +34,25 @@
 				<?php echo $customer->state;?>
 			</div>
 		</div>
+		<!--
 		<div id="logo"style="text-align: right; margin-top: 15px;float: left; border: 1px solid #fff;">
 			<div>&nbsp;</div>
-				<div id="company_name" style="font-size: 150%;">
-                     <?php echo $info[0]->value;?>
-                </div>
+			<div id="company_name" style="text-align: center;" >
+					<?php echo $info[0]->value;?>
 			</div>
-		</div><br><br><br><br><br><br><br><br>
+		</div> -->
+		<!--
+		<div id="logo">
+			<img id="image" src="http://localhost/haciiendapuntoventa/public/uploads/company_logo.png" alt="company_logo">
+			<div>&nbsp;</div>
+			<div id="company_name">SIEMBRA INVERSIONES, C.A. J-50170383-3</div>
+		</div>-->
+	</div><br><br><br><br><br><br><br><br>
 		<div id="block2" style="width: 100%;">
 			<div id="company-title" style="float: left;">
 			        <?php echo $info[1]->value;?>
 					<br>
-					<?php echo $info[2]->value;?>
+					<?php //echo $info[2]->value;?>
 			</div>
 			<table id="meta" style="margin-top: 1px;width: 300px;float: right;" >
 				<tbody>
@@ -105,12 +126,12 @@
 				<td colspan="2" class="blank-bottom" style="border: 1px;"> </td>
 				<td rowspan="4"> 
 					Expresado a tasa BCV <?php echo number_format($sales[0]->exchangerate,4, ",", ".") ;?>  <br>
-					Subtotal Bs. <?php  echo number_format($sales[0]->subtotal,4, ",", ".")  ?><br>
-					IVA 16%  Bs. <?php echo  number_format($sales[0]->iva,4, ",", ".") ?> <br>
-					Total        Bs.  <?php echo  number_format($sales[0]->total,4, ",", ".") ;?> <br>			</td>
+					Subtotal Bs. <?php  echo number_format($sales[0]->subtotal,2, ",", ".")  ?><br>
+					IVA 16%  Bs. <?php echo  number_format( ( floatval($sales[0]->iva) * ($sales[0]->exchangerate) ) ,2, ",", ".") ?> <br>
+					Total        Bs.  <?php echo  number_format($sales[0]->total,2, ",", ".") ;?> <br>			</td>
 				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;">SubTotal</td>
 				<td class="total-value" id="subtotal">
-					<?php echo '$'.number_format($total,2, ",", ".") ;?>				
+					<?php echo '$'.number_format($sales[0]->iva,2, ",", ".") ;?>			
 				</td>
 			</tr>	
 			<tr>
@@ -118,29 +139,17 @@
 				<td colspan="3" class="blank"> </td>
 				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;" >Total</td>
 				<td class="total-value" id="total">
-					<?php echo '$'.number_format($total,2, ",", ".") ;?>	
+					<?php echo '$'.number_format($sales[0]->payment_amount,2, ",", ".") ;?>	
 				</td>
 			</tr>
 			<tr>
 				<td colspan="3" class="blank"> </td>
 				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;">venta a credito (TBD)</td>
 				<td class="total-value" id="paid">
-					<?php echo '$'.number_format($total,2, ",", ".") ;?>	
+					<?php echo '$'.number_format($sales[0]->payment_amount,2, ",", ".") ;?>	
 				</td>
 			</tr>
-			<tr>
-				<td colspan="3" class="blank"> </td>
-				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;">Cambio a tasa</td>
-				<td class="total-value" id="change">
-				<?php 
-					if ( isset($sales[0]->exchangerate))
-					{
-						$cambio = floatval($sales[0]->exchangerate)* floatval($total);
-						echo  number_format($cambio,4, ",", ".").' BS';
-					}
-				?>
-				</td>
-			</tr>
+			
 		
 		</tbody>
 	</table>

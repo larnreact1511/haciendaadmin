@@ -11,12 +11,18 @@ class Ventas extends CI_Model
     {
         $limit =($nro *10);
         $nro = $nro-1;
-        $sql="SELECT s.customer_id, s.employee_id, s.invoice_number, s.sale_type,s.sale_id, sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,FORMAT(ot.subtotal,4,'de_DE') AS subtotal,FORMAT(ot.iva,4,'de_DE') AS iva , FORMAT(ot.total,4,'de_DE') AS total,
+        $sql="SELECT  s.invoice_number, s.sale_id, 
+        sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,
+        FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,
+        FORMAT(it.item_tax_amount,2,'de_DE') AS iva , it.item_tax_amount as iva2, 
+        FORMAT( (sp.payment_amount -it.item_tax_amount ) ,2,'de_DE')  AS subtotal, (sp.payment_amount -it.item_tax_amount ) AS subtotal2, 
+        FORMAT(sp.payment_amount,2,'de_DE') AS total, sp.payment_amount as total2,
         op.first_name AS nombre, op.last_name AS apellido
         FROM ospos_sales s 
         LEFT JOIN ospos_sales_payments sp ON s.sale_id = sp.sale_id 
         LEFT JOIN ospos_tasa ot ON ot.sale_id = s.sale_id
         LEFT JOIN ospos_people op  ON op.person_id = s.customer_id
+        LEFT JOIN ospos_sales_items_taxes it ON it.sale_id = s.sale_id
         where s.sale_status =0  LIMIT $nro,$limit";
         $v2=[];
         $cadena='';
@@ -90,7 +96,13 @@ class Ventas extends CI_Model
     }
     public function factura($id)
     {
-            $sql1 ="SELECT os.*, osp.payment_amount  , ot.exchangerate, ot.subtotal, ot.iva, ot.total FROM ospos_sales os LEFT JOIN ospos_sales_payments osp ON osp.sale_id =os.sale_id LEFT JOIN ospos_tasa ot ON ot.sale_id = os.sale_id WHERE os.sale_id =$id";
+            $sql1 ="SELECT os.*, osp.payment_amount  , ot.exchangerate, ot.subtotal, ot.total , 
+            it.item_tax_amount AS iva
+            FROM ospos_sales os 
+            LEFT JOIN ospos_sales_payments osp ON osp.sale_id =os.sale_id 
+            LEFT JOIN ospos_tasa ot ON ot.sale_id = os.sale_id 
+            LEFT JOIN ospos_sales_items_taxes it ON it.sale_id =os.sale_id
+            WHERE os.sale_id =$id";
             $data['sales']= @$this->db->query($sql1)->result();
             $sql2 ="SELECT * , i.name as nombrrproducto FROM ospos_sales_items osi LEFT JOIN ospos_items i ON i.item_id = osi.line   WHERE osi.sale_id =$id";
             $data['items']= @$this->db->query($sql2)->result();

@@ -87,7 +87,6 @@
                                         <th>Nombre </th>
                                         <th>Apellido </th>
                                         <th>Numero de factura </th>
-                                        <th>Monto </th>
                                         <th>Tipo de pago </th>
                                         <th>Tasa BCV  </th>
                                         <th>Subtotal </th>
@@ -126,22 +125,22 @@
                       <label id ="error_1"></label>
 
                   </div>
-                  <input type="text" class="form-control" id="idsales" name="idsales" readonly>
+                  <input type="text" class="form-control" id="idsales" name="idsales" readonly hidden>
                   <div class="row">
                       <div class="col-md-6">
                           <div class="form-group">
                               <label for="montoaboono">
-                                monto
+                                Monto
                               </label>
-                              <input type="number" class="form-control" id="montoaboono" name="montoaboono"  placeholder="Ingrese abono">
+                              <input type="number" class="form-control" id="montoaboono" name="montoaboono"  placeholder="Ingrese monto del abono">
                           </div>
                       </div>
                       <div class="col-md-6">
                           <div class="form-group">
                               <label for="fechaabono">
-                                Fecha
+                                Fecha Abono
                               </label>
-                              <input type="date" class="form-control" id="fechaabono" name="fechaabono"  placeholder="Ingrese fecha">
+                              <input type="date" class="form-control" id="fechaabono" name="fechaabono"  placeholder="Ingrese fecha abono">
                           </div>
                       </div>
                   </div>   
@@ -182,7 +181,7 @@
           <div class="modal-content">
               <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel"> 
-                      Agregar Abono
+                      Agregar tasa de cambio
                   </h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
@@ -193,14 +192,22 @@
                       <label id ="error_2"></label>
 
                   </div>
-                  <input type="text" class="form-control" id="idsalesmonto" name="idsalesmonto"  readonly>
+                  <input type="text" class="form-control" id="idsalesmonto" name="idsalesmonto"  readonly hidden>
                   <div class="row">
                       <div class="col-md-6">
                           <div class="form-group">
                               <label for="montotasacambio">
                                 Expresado a tasa BCV 
                               </label>
-                              <input type="number" class="form-control" id="montotasacambio" name="montotasacambio"  placeholder=" Expresado a tasa BCV ">
+                              <input 
+                                type="number" 
+                                class="form-control" 
+                                id="montotasacambio" 
+                                name="montotasacambio"  
+                                placeholder=" Expresado a tasa BCV "
+                                onkeypress="calcularmontos()"
+                                onblur="calcularmontos()"
+                              >
                           </div>
                       </div>
                       <div class="col-md-6">
@@ -208,7 +215,7 @@
                               <label for="montosubtotal">
                                 Subtotal
                               </label>
-                              <input type="number" class="form-control" id="montosubtotal" name="montosubtotal"  placeholder=" Subtotal">
+                              <input type="number" class="form-control" id="montosubtotal" name="montosubtotal" readonly  placeholder=" Subtotal">
                           </div>
                       </div>
                       <div class="col-md-6">
@@ -216,7 +223,7 @@
                               <label for="monotiva16">
                                 IVA 16%
                               </label>
-                              <input type="number" class="form-control" id="monotiva16" name="monotiva16"  placeholder="IVA 16%">
+                              <input type="number" class="form-control" id="monotiva16" name="monotiva16" readonly  placeholder="IVA 16%">
                           </div>
                       </div>
                       <div class="col-md-6">
@@ -224,7 +231,7 @@
                               <label for="montototal">
                                 Total
                               </label>
-                              <input type="number" class="form-control" id="montototal" name="montototal"  placeholder="Total">
+                              <input type="number" class="form-control" id="montototal" name="montototal" readonly  placeholder="Total">
                           </div>
                       </div>
                   </div>
@@ -252,6 +259,9 @@
 <?php $this->load->view('admin/scrips'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    let iva2 =0;
+    let sub2 =0;
+    let total2 =0;
     $( document ).ready(function() 
     {
         
@@ -284,7 +294,6 @@
                       return '';                      
                     }
                 }, 
-                { data: 'payment_amount' },
                 //{ data: 'payment_type' },
                 {
                     orderable: false,
@@ -320,9 +329,10 @@
                       }
                       else if (  (row.payment_type) && (row.payment_type =='venta a credito (TBD)')) 
                       {
-                          return  `<i onclick="agregarpago(${row.sale_id})" title="agregar abono" class="fas fa-plus fa-sm"></i>
-                          <i onclick="verabonos(${row.sale_id})" class="fa fa-eye" title ="ver abonos" aria-hidden="true"></i>
-                          <i onclick="agregorcomentario(${row.sale_id})" class="fa fa-comment-o" aria-hidden="true"></i>  
+                          return  `
+                          <i onclick="agregarpago(${row.sale_id})" title="agregar abono" class="fas fa-plus fa-sm"></i>
+                          <i onclick="verabonos(${row.sale_id})" class="fa fa-eye" title ="ver abonos" aria-hidden="true"></i><br>
+                          <i onclick="agregorcomentario(${row.sale_id},'${row.iva2}','${row.subtotal2}','${row.total2}')"  class="fa fa-comment-o" aria-hidden="true"></i>  
                           <i onclick="verfactura(${row.sale_id})" class="fa fa-file-text-o" aria-hidden="true"></i>`;
                       }
                       
@@ -460,18 +470,21 @@
           }
       });
     }
-    function agregorcomentario(id)
+    function agregorcomentario(id,iva,sub,total)
     {
+      iva2=iva;
+      total2=total;
+      sub2=sub;
       $("#idsalesmonto").val(id)
       $("#montotasacambio").val('');
-      $("#monotiva16").val('');
-      $("#montototal").val('');
-      $("#montosubtotal").val('');
+      $("#monotiva16").val(iva);
+      $("#montototal").val(total);
+      $("#montosubtotal").val(sub);
       $("#error_2").html('');
       $("#error_2").css('display','none');
       $("#modalcommentario").modal("show");
     }
-    function cerarmodal()
+    function cerarmodal3()
     {
       $("#idsalesmonto").val('');
       $("#montotasacambio").val('');
@@ -569,6 +582,13 @@
     function verfactura(id)
     {
       window.open('admin/mypdf2/'+id, '_blank');
+    }
+    function calcularmontos(evt)
+    {
+        let m = $("#montotasacambio").val(); 
+        $("#monotiva16").val( parseFloat(iva2)* parseFloat(m) );
+        $("#montototal").val( parseFloat(total2)* parseFloat(m)  );  console.log(total2,m)
+        $("#montosubtotal").val( parseFloat(sub2)* parseFloat(m) )
     }
 </script>
 </body>
