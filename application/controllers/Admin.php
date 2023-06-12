@@ -222,10 +222,10 @@ class Admin extends CI_Controller {
 		$data['nro'] =$id;
 		$this->load->library('pdf');
 		//echo "<pre>";print_r($data); die;
-		$this->load->view('examples/facturapdf',$data);
-		//$html = file_get_contents($this->load->view('examples/pdfexample2',$data)); 
-		//$html = $this->load->view('examples/pdfexample2', $data, true);
-        //$this->pdf->createPDF($html, 'mypdf', false);
+		//$this->load->view('examples/facturapdf',$data);
+		//$html = file_get_contents($this->load->view('examples/facturapdf',$data)); 
+		$html = $this->load->view('examples/facturapdf', $data, true);
+        $this->pdf->createPDF($html, 'mypdf', false);
 	}
 	public function mypdf3($id)
 	{
