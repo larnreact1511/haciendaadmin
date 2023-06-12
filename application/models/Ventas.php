@@ -9,24 +9,49 @@ class Ventas extends CI_Model
     }
     public function todaslasventas($nro,$search)
     {
-        $sql="SELECT s.customer_id, s.employee_id, s.invoice_number, s.sale_type,s.sale_id, sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,FORMAT(ot.subtotal,4,'de_DE') AS subtotal,FORMAT(ot.iva,4,'de_DE') AS iva , FORMAT(ot.total,4,'de_DE') AS total
+        $limit =($nro *10);
+        $nro = $nro-1;
+        $sql="SELECT s.customer_id, s.employee_id, s.invoice_number, s.sale_type,s.sale_id, sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,FORMAT(ot.subtotal,4,'de_DE') AS subtotal,FORMAT(ot.iva,4,'de_DE') AS iva , FORMAT(ot.total,4,'de_DE') AS total,
+        op.first_name AS nombre, op.last_name AS apellido
         FROM ospos_sales s 
         LEFT JOIN ospos_sales_payments sp ON s.sale_id = sp.sale_id 
         LEFT JOIN ospos_tasa ot ON ot.sale_id = s.sale_id
-        where s.sale_status =0";
-
+        LEFT JOIN ospos_people op  ON op.person_id = s.customer_id
+        where s.sale_status =0  LIMIT $nro,$limit";
+        $v2=[];
+        $cadena='';
         $this->load->database(); // cargar la base de datos
         if ($search['value']=='')
         {
+            
             $vec['data']= @$this->db->query($sql)->result();
             $cant= @$this->db->query($sql)->result();
+            $vec['count']=count($cant);
         }
         else
         {
-            $vec['data']= @$this->db->query($sql)->result();
-            $cant= @$this->db->query($sql)->result();
+            $value = $search['value'];
+            $sqlbus ="SELECT  op.person_id  FROM  ospos_people op  WHERE op.first_name  LIKE '%$value%'   OR op.last_name  LIKE '%$value%'";
+            $v1 = @$this->db->query($sqlbus)->result();
+            if (  count($v1) > 0 )
+            {
+                foreach ($v1 as $v11)
+                {
+                    array_push($v2, $v11->person_id);
+                    $cadena = $cadena.''.$v11->person_id.',';
+                }
+                $cadena .='0';
+                $sql="SELECT s.customer_id, s.employee_id, s.invoice_number, s.sale_type,s.sale_id, sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,FORMAT(ot.subtotal,4,'de_DE') AS subtotal,FORMAT(ot.iva,4,'de_DE') AS iva , FORMAT(ot.total,4,'de_DE') AS total, op.first_name AS nombre, op.last_name AS apellido FROM ospos_sales s LEFT JOIN ospos_sales_payments sp ON s.sale_id = sp.sale_id LEFT JOIN ospos_tasa ot ON ot.sale_id = s.sale_id LEFT JOIN ospos_people op  ON op.person_id = s.customer_id where s.sale_status =0 and s.customer_id IN (".$cadena.")";
+                $vec['data']= @$this->db->query($sql)->result();
+                $cant= @$this->db->query($sql)->result();
+                $vec['count']=count($cant);
+            }
+            else
+            {
+                $vec['data']=[] ;
+                $vec['count']=0;
+            }   
         }
-        $vec['count']=count($cant);
         return $vec;
 
     }

@@ -84,6 +84,8 @@
                             <table id="tablaventas" class="display" style="width:100%">
                                 <thead>
                                     <tr>
+                                        <th>Nombre </th>
+                                        <th>Apellido </th>
                                         <th>Numero de factura </th>
                                         <th>Monto </th>
                                         <th>Tipo de pago </th>
@@ -265,7 +267,8 @@
             columns: 
             [
                 
-                //{ data: 'invoice_number' },
+                { data: 'nombre' },
+                { data: 'apellido' },
                 {
                     orderable: false,
                     data: "null",
