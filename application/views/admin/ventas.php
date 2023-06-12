@@ -568,7 +568,7 @@
     }
     function verfactura(id)
     {
-      window.open('mypdf2/'+id, '_blank');
+      window.open('admin/mypdf2/'+id, '_blank');
     }
 </script>
 </body>
