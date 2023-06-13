@@ -153,4 +153,14 @@ class Ventas extends CI_Model
         $data = $query->result_array();
         return  $data;
     }
+    public function datosfactura($id)
+    {
+        $sql=" SELECT s.invoice_number FROM ospos_sales s WHERE s.sale_id =".$id;
+        $query = $this->db->query($sql); //echo $sql;
+        $data = $query->result_array();
+        if ($data[0]['invoice_number'] > 0)
+            return $data[0]['invoice_number'];
+        else
+            return false;
+    }
 }

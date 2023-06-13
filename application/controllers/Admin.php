@@ -299,25 +299,30 @@ class Admin extends CI_Controller {
 	}
 	public function  exportarabonos($id)
 	{
-		$filename ="abono.xls";
+		
 		$this->load->helper('url');
 		$this->load->library('session');
 		$this->load->model('ventas');
-		$datos = $this->ventas->exportarabonos($id);
-		header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=\"$filename\"");
-		$isPrintHeader = false;
-		foreach ( $datos  as $row )
+		$datosfactura = $this->ventas->datosfactura($id);
+		if ($datosfactura)
 		{
-				if (! $isPrintHeader ) 
-                {
-
-                    echo implode("\t", array_keys($row)) . "\n";
-                    $isPrintHeader = true;
-                }
-                
-				echo implode("\t", array_values($row)) . "\n";
+			$filename ="abono_factura-".$datosfactura.".xls";
+			$datos = $this->ventas->exportarabonos($id);
+			header("Content-Type: application/vnd.ms-excel");
+			header("Content-Disposition: attachment; filename=\"$filename\"");
+			$isPrintHeader = false;
+			foreach ( $datos  as $row )
+			{
+					if (! $isPrintHeader ) 
+					{
+						echo implode("\t", array_keys($row)) . "\n";
+						$isPrintHeader = true;
+					}
+					echo implode("\t", array_values($row)) . "\n";
+			}
+			exit();
 		}
-		exit();
+		else
+			exit();
 	}
 }
