@@ -7,23 +7,29 @@ class Ventas extends CI_Model
         $this->load->helper(array('form', 'url', 'url_helper'));
         $this->load->library('session');	
     }
-    public function todaslasventas($nro,$search)
+    public function todaslasventas($start,$length,$search)
     {
-        $limit =($nro *10);
-        $nro = $nro-1;
-        $sql="SELECT  s.invoice_number, s.sale_id, 
-        sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount ,
+        
+        
+        $sqlbase="SELECT s.sale_id, s.invoice_number,
+        sp.payment_type ,  FORMAT(sp.payment_amount,2,'de_DE') as payment_amount,
+        FORMAT(sp.payment_amount,2,'de_DE') AS total, sp.payment_amount as total2,
         FORMAT(ot.exchangerate,4,'de_DE') AS exchangerate ,
-        FORMAT(it.item_tax_amount,2,'de_DE') AS iva , it.item_tax_amount as iva2, 
-        FORMAT( (sp.payment_amount -it.item_tax_amount ) ,2,'de_DE')  AS subtotal, (sp.payment_amount -it.item_tax_amount ) AS subtotal2, 
+        (SELECT SUM(t.item_tax_amount) FROM ospos_sales_items_taxes t WHERE t.sale_id = s.sale_id )AS iva2,
+        FORMAT( (SELECT SUM(t.item_tax_amount) FROM ospos_sales_items_taxes t WHERE t.sale_id = s.sale_id)  ,2,'de_DE') AS iva,
+        FORMAT( (sp.payment_amount -(SELECT SUM(t.item_tax_amount) FROM ospos_sales_items_taxes t WHERE t.sale_id = s.sale_id) ) ,2,'de_DE')  AS subtotal,
+        (sp.payment_amount -(SELECT SUM(t.item_tax_amount) FROM ospos_sales_items_taxes t WHERE t.sale_id = s.sale_id) ) AS subtotal2,
         FORMAT(sp.payment_amount,2,'de_DE') AS total, sp.payment_amount as total2,
         op.first_name AS nombre, op.last_name AS apellido
-        FROM ospos_sales s 
+        FROM ospos_sales s
         LEFT JOIN ospos_sales_payments sp ON s.sale_id = sp.sale_id 
         LEFT JOIN ospos_tasa ot ON ot.sale_id = s.sale_id
         LEFT JOIN ospos_people op  ON op.person_id = s.customer_id
-        LEFT JOIN ospos_sales_items_taxes it ON it.sale_id = s.sale_id
-        where s.sale_status =0  LIMIT $nro,$limit";
+        ORDER BY(s.sale_id) desc";
+
+        $sql =$sqlbase ." LIMIT $start,$length";
+
+
         $v2=[];
         $cadena='';
         $this->load->database(); // cargar la base de datos
@@ -31,7 +37,7 @@ class Ventas extends CI_Model
         {
             
             $vec['data']= @$this->db->query($sql)->result();
-            $cant= @$this->db->query($sql)->result();
+            $cant= @$this->db->query($sqlbase)->result();
             $vec['count']=count($cant);
         }
         else
@@ -138,5 +144,13 @@ class Ventas extends CI_Model
                 return array('result'=>false,'message'=>'No se pudo ingresar la tasa de cambio');
         }
         
+    }
+
+    public function exportarabonos ($id)
+    {
+        $sql ="SELECT FORMAT(oa.monto,2,'de_DE') monto , oa.fechapgo FROM ospos_amortization oa WHERE oa.sale_id =".$id;
+        $query = $this->db->query($sql); //echo $sql;
+        $data = $query->result_array();
+        return  $data;
     }
 }

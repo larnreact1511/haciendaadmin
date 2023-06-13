@@ -333,7 +333,8 @@
                           <i onclick="agregarpago(${row.sale_id})" title="agregar abono" class="fas fa-plus fa-sm"></i>
                           <i onclick="verabonos(${row.sale_id})" class="fa fa-eye" title ="ver abonos" aria-hidden="true"></i><br>
                           <i onclick="agregorcomentario(${row.sale_id},'${row.iva2}','${row.subtotal2}','${row.total2}')"  class="fa fa-comment-o" aria-hidden="true"></i>  
-                          <i onclick="verfactura(${row.sale_id})" class="fa fa-file-text-o" aria-hidden="true"></i>`;
+                          <i onclick="verfactura(${row.sale_id})" class="fa fa-file-text-o" aria-hidden="true"></i><br>
+                          <i onclick="exportarabonos(${row.sale_id})" class="fa fa-file-excel-o" aria-hidden="true"></i>`;
                       }
                       
                     }
@@ -589,6 +590,11 @@
         $("#monotiva16").val( parseFloat(iva2)* parseFloat(m) );
         $("#montototal").val( parseFloat(total2)* parseFloat(m)  );  console.log(total2,m)
         $("#montosubtotal").val( parseFloat(sub2)* parseFloat(m) )
+    }
+    function exportarabonos(id)
+    {
+      let url ='<?php echo base_url(); ?>/admin/exportarabonos/'+id;
+      window.open(url, 'excel', "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=400, height=400");    
     }
 </script>
 </body>

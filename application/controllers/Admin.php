@@ -162,7 +162,9 @@ class Admin extends CI_Controller {
 	{
 		$this->load->model('ventas');
 		$search=$_REQUEST['search'];
-		$data=  $this->ventas->todaslasventas($_REQUEST['draw'],$search);
+		$start=$_REQUEST['start'];
+		$length=$_REQUEST['length'];
+		$data=  $this->ventas->todaslasventas($start,$length,$search);
         $dataresponce['draw'] =$_REQUEST['draw'];
         $dataresponce['recordsTotal'] =$data['count'];
         $dataresponce['recordsFiltered'] =$data['count'];
@@ -294,5 +296,28 @@ class Admin extends CI_Controller {
 	public function is_logged_in()
 	{
 		return ($this->session->userdata('login'));
+	}
+	public function  exportarabonos($id)
+	{
+		$filename ="abono.xls";
+		$this->load->helper('url');
+		$this->load->library('session');
+		$this->load->model('ventas');
+		$datos = $this->ventas->exportarabonos($id);
+		header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+		$isPrintHeader = false;
+		foreach ( $datos  as $row )
+		{
+				if (! $isPrintHeader ) 
+                {
+
+                    echo implode("\t", array_keys($row)) . "\n";
+                    $isPrintHeader = true;
+                }
+                
+				echo implode("\t", array_values($row)) . "\n";
+		}
+		exit();
 	}
 }
