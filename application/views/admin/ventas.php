@@ -327,7 +327,7 @@
                       {
 
                       }
-                      else if (  (row.payment_type) && (row.payment_type =='venta a credito (TBD)')) 
+                      else if (  (row.payment_type) && (row.payment_type =='venta a credito (TBD)') && (row.invoice_number !=null) ) 
                       {
                           return  `
                           <i onclick="agregarpago(${row.sale_id})" title="agregar abono" class="fas fa-plus fa-sm"></i>
