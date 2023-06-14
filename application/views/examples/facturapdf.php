@@ -23,7 +23,7 @@
 			alt="company_logo"
 		>
 		<br>
-		<?php echo $info[0]->value;?>
+		<?php echo $info[1]->value."<br>".$info[0]->value;?>
 	</div>
 	<div id="block1" style="margin: 0;padding: 0;">
 		<div id="customer-title" style="height: 100px;float: right;margin-top: 40px;">
@@ -50,16 +50,15 @@
 	</div><br><br><br><br><br><br><br><br>
 		<div id="block2" style="width: 100%;">
 			<div id="company-title" style="float: left;">
-			        <?php echo $info[1]->value;?>
-					<br>
-					<?php //echo $info[2]->value;?>
+			        <?php echo $sales[0]->payment_type;  ?>
+					
 			</div>
 			<table id="meta" style="margin-top: 1px;width: 300px;float: right;" >
 				<tbody>
 					<tr>
 						<td class="meta-head" style="text-align: left; background: #eee;">Factura # </td>
 						<td>
-							<?php echo $nro?>
+							<?php echo $invoice_number?>
 						</td>
 					</tr>
 					<tr>
@@ -129,22 +128,23 @@
 					Subtotal Bs. <?php  echo number_format($sales[0]->subtotal,2, ",", ".")  ?><br>
 					IVA 16%  Bs. <?php echo  number_format( ( floatval($sales[0]->iva) * ($sales[0]->exchangerate) ) ,2, ",", ".") ?> <br>
 					Total        Bs.  <?php echo  number_format($sales[0]->total,2, ",", ".") ;?> <br>			</td>
-				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;">SubTotal</td>
+				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;"> Base imponible </td>
 				<td class="total-value" id="subtotal">
-					<?php echo '$'.number_format($sales[0]->iva,2, ",", ".") ;?>			
+					<?php echo '$'.number_format( (  floatval($sales[0]->payment_amount)-floatval($sales[0]->iva) ) ,2, ",", ".") ;?>			
 				</td>
 			</tr>	
 			<tr>
 				
 				<td colspan="3" class="blank"> </td>
-				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;" >Total</td>
+				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;" > Iva</td>
 				<td class="total-value" id="total">
-					<?php echo '$'.number_format($sales[0]->payment_amount,2, ",", ".") ;?>	
+					<?php echo '$'.number_format($sales[0]->iva,2, ",", ".") ;?>	
+					
 				</td>
 			</tr>
 			<tr>
 				<td colspan="3" class="blank"> </td>
-				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;">venta a credito (TBD)</td>
+				<td colspan="2" class="total-line" style="border-right: 0; text-align: right;">Total </td>
 				<td class="total-value" id="paid">
 					<?php echo '$'.number_format($sales[0]->payment_amount,2, ",", ".") ;?>	
 				</td>

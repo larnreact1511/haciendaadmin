@@ -102,14 +102,18 @@ class Ventas extends CI_Model
     }
     public function factura($id)
     {
-            $sql1 ="SELECT os.*, osp.payment_amount  , ot.exchangerate, ot.subtotal, ot.total , 
+            $sql1 ="SELECT os.*, osp.payment_amount  , ot.exchangerate, ot.subtotal, ot.total ,  osp.payment_type,
             it.item_tax_amount AS iva
             FROM ospos_sales os 
             LEFT JOIN ospos_sales_payments osp ON osp.sale_id =os.sale_id 
             LEFT JOIN ospos_tasa ot ON ot.sale_id = os.sale_id 
             LEFT JOIN ospos_sales_items_taxes it ON it.sale_id =os.sale_id
             WHERE os.sale_id =$id";
-            $data['sales']= @$this->db->query($sql1)->result();
+            $res =@$this->db->query($sql1)->result();
+            $data['sales']= $res;
+            //echo "<pre>"; print_r($res);die;
+            $idcustomer = $res[0]->customer_id;
+            $data['invoice_number']= $res[0]->invoice_number;
             $sql2 ="SELECT * , i.name as nombrrproducto FROM ospos_sales_items osi LEFT JOIN ospos_items i ON i.item_id = osi.line   WHERE osi.sale_id =$id";
             $data['items']= @$this->db->query($sql2)->result();
             $sql3 ="SELECT * FROM ospos_app_config c WHERE c.`key` ='address' OR c.`key` ='company'  OR c.`key` ='phone' ; ";
@@ -117,7 +121,7 @@ class Ventas extends CI_Model
             //
             $this->db->from('ospos_customers');
             $this->db->join('ospos_people', 'ospos_people.person_id = ospos_customers.person_id');
-            $this->db->where('ospos_customers.person_id', 2);
+            $this->db->where('ospos_customers.person_id', $idcustomer);
             $query = $this->db->get();
             $data['customer']=$query->row();
             return $data;
