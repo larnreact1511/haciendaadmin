@@ -73,17 +73,24 @@
                                
                             </h3>
                             <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            
+                                <div style="display: none;" id="div_btn">
+                                  <i onclick="agregarpago()" title="agregar abono" class="fas fa-plus fa-sm p-1"></i>
+                                  <i onclick="verabonos()" class="fa fa-eye p-1" title ="ver abonos" aria-hidden="true"></i>
+                                  <i onclick="agregorcomentario()"  class="fa fa-comment-o p-1" aria-hidden="true"></i>  
+                                  <i onclick="verfactura()" class="fa fa-file-text-o p-1" aria-hidden="true"></i>
+                                  <i onclick="exportarabonos()" class="fa fa-file-excel-o p-1" aria-hidden="true"></i>
+                                </div>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse" style="display: none;">
+                                    <i class="fas fa-minus p-1"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
                             <!-- -->
-                            <table id="tablaventas" class="display" style="width:100%">
-                                <thead>
+                            <table id="tablaventas" class="table" style="width:100%">
+                                <thead class="thead-dark">
                                     <tr>
+                                        <th></th>
                                         <th>Nombre </th>
                                         <th>Apellido </th>
                                         <th>Numero de factura </th>
@@ -92,7 +99,6 @@
                                         <th>Subtotal </th>
                                         <th>Iva 16 </th>
                                         <th>Total</th>
-                                        <th>Accion </th>
                                     </tr>
                                 </thead>
                                 
@@ -262,6 +268,10 @@
     let iva2 =0;
     let sub2 =0;
     let total2 =0;
+    localStorage.setItem("sale_id",0);
+    localStorage.setItem("iva2",0);
+    localStorage.setItem("subtotal2",0);
+    localStorage.setItem("total2",0);
     $( document ).ready(function() 
     {
         
@@ -277,6 +287,16 @@
             columns: 
             [
                 
+              {
+                    orderable: false,
+                    data: "null",
+                    className: "center",
+                    defaultContent:'',
+                    render: function(data, type, row, meta) 
+                    {
+                      return  `<input type="radio" name="radioop" value="" onclick="datos('${row.sale_id}','${row.iva2}','${row.subtotal2}','${row.total2}')">`;
+                    }
+                },
                 { data: 'nombre' },
                 { data: 'apellido' },
                 {
@@ -315,6 +335,7 @@
                 { data: 'subtotal' },
                 { data: 'iva' },
                 { data: 'total' },
+                /*
                 {
                     orderable: false,
                     data: "null",
@@ -336,16 +357,15 @@
                           <i onclick="verfactura(${row.sale_id})" class="fa fa-file-text-o" aria-hidden="true"></i><br>
                           <i onclick="exportarabonos(${row.sale_id})" class="fa fa-file-excel-o" aria-hidden="true"></i>`;
                       }
-                      
                     }
                 },
-              
+                */
             ],
         });
     });
-    function agregarpago(id)
+    function agregarpago()
     {
-      $("#idsales").val(id)
+      $("#idsales").val(localStorage.getItem("sale_id"));
       $("#modalabono").modal("show");
     }
     function cerarmodal()
@@ -439,10 +459,10 @@
           }
             
     }
-    function verabonos (id)
+    function verabonos ()
     {
       var datas = new FormData(); 
-      datas.append("idsales",id );
+      datas.append("idsales",localStorage.getItem("sale_id") );
       $.ajax(
       {
           url: "<?php echo base_url(); ?>admin/verabonos",
@@ -471,7 +491,7 @@
           }
       });
     }
-    function agregorcomentario(id,iva,sub,total)
+    function agregorcomentario()
     {
       iva2=iva;
       total2=total;
@@ -580,21 +600,29 @@
           }
             
     }
-    function verfactura(id)
+    function verfactura()
     {
-      window.open('admin/mypdf2/'+id, '_blank');
+      window.open('<?php echo base_url(); ?>/admin/mypdf2/'+localStorage.getItem("sale_id"), '_blank');
     }
     function calcularmontos(evt)
     {
         let m = $("#montotasacambio").val(); 
         $("#monotiva16").val( parseFloat(iva2)* parseFloat(m) );
-        $("#montototal").val( parseFloat(total2)* parseFloat(m)  );  console.log(total2,m)
+        $("#montototal").val( parseFloat(total2)* parseFloat(m)  ); 
         $("#montosubtotal").val( parseFloat(sub2)* parseFloat(m) )
     }
-    function exportarabonos(id)
+    function exportarabonos()
     {
-      let url ='<?php echo base_url(); ?>/admin/exportarabonos/'+id;
+      let url ='<?php echo base_url(); ?>/admin/exportarabonos/'+localStorage.getItem("sale_id");
       window.open(url, 'excel', "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=400, height=400");    
+    }
+    function datos(id,iva,sub,total)
+    {
+      localStorage.setItem("sale_id",id);
+      localStorage.setItem("iva2",iva);
+      localStorage.setItem("subtotal2",sub);
+      localStorage.setItem("total2",total);
+      $("#div_btn").css("display","block")
     }
 </script>
 </body>
