@@ -31,7 +31,8 @@
                 <?php echo $customer->company_name;?><br>
 				<?php echo $customer->phone_number;?><br>
 				<?php echo $customer->zip.''.$customer->city;?><br>
-				<?php echo $customer->state;?>
+				<?php echo $customer->state;?><br>
+				<?php echo "RIF : ".$customer->tax_id;?>
 			</div>
 		</div>
 		<!--
